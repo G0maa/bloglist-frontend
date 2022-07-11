@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
+import BlogForm from './components/BlogFrom'
 import Notification from './components/Notification'
+import Toggleable from './components/Toggleable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -12,9 +14,7 @@ const App = () => {
 
   const [user, setUser] = useState(null)
 
-  const [blogTitle, setBlogTitle] = useState('')
-  const [blogAuthor, setBlogAuthor] = useState('')
-  const [blogUrl, setBlogUrl] = useState('')
+
 
   const [notificationObj, setNotificationObj] = useState(null)
 
@@ -89,30 +89,24 @@ const App = () => {
     setUser(null)
   }
 
-  // There should be try/catch caluse, but I'm just lazy.
-  const handleNewBlog = async (event) => {
-    event.preventDefault()
-
-    const newBlog = {
-      title: blogTitle,
-      author: blogAuthor,
-      url: blogUrl,
-    }
+  // Can't I just move thing function to the BlogForm component?
+  const submitBlog = async (newBlog) => {
     try {
       const retBlog = await blogService.postBlog(newBlog)
       console.log(retBlog)
       const retBlogs = await blogService.getAll()
       setBlogs(retBlogs)
-      setBlogTitle('')
-      setBlogAuthor('')
-      setBlogUrl('')
-      showNotification(`Blog "${blogTitle}" was added successfully`)
+
+      blogFormRef.current.toggleVisible()
+      showNotification(`Blog "${newBlog.title}" was added successfully`)
     } catch (error) {
       console.log(error)
       showError(error.response.data.error)
     }
 
   }
+
+  const blogFormRef = useRef()
 
   if(user === null) {
     return (
@@ -155,39 +149,9 @@ const App = () => {
           <Blog key={blog.id} blog={blog} />
         )}
       </div>
-      <div>
-        <h2>Create new</h2>
-        <form onSubmit={handleNewBlog}>
-          <div>
-            Title
-            <input
-              type="text"
-              value={blogTitle}
-              name="BlogTitle"
-              onChange={({ target }) => setBlogTitle(target.value)}
-            />
-          </div>
-          <div>
-            Author
-            <input
-              type="text"
-              value={blogAuthor}
-              name="BlogAuthor"
-              onChange={({ target }) => setBlogAuthor(target.value)}
-            />
-          </div>
-          <div>
-            URL
-            <input
-              type="text"
-              value={blogUrl}
-              name="BlogUrl"
-              onChange={({ target }) => setBlogUrl(target.value)}
-            />
-          </div>
-          <button tpye="submit">Create</button>
-        </form>
-      </div>
+      <Toggleable buttonLabel={'show form'} ref={blogFormRef}>
+        <BlogForm submitBlog={submitBlog} />
+      </Toggleable>
     </div>
   )
 }
