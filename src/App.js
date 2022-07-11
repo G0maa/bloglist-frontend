@@ -54,9 +54,10 @@ const App = () => {
   // nvm, useEffect gets executed in the order they're defined in.
   useEffect(() => {
     console.log('test1')
-    blogService.getAll().then(blogs =>
+    blogService.getAll().then((blogs) => {
+      blogs.sort((blogA, blogB) => blogB.likes - blogA.likes)
       setBlogs(blogs)
-    )
+    })
   }, [])
 
 
@@ -107,7 +108,10 @@ const App = () => {
       // I think this await doesn't work, if there's a console.log after it it gets printed immidietly.
       await blogService.likeBlog(newBlog)
       console.log("test await")
+
+      // Not sure if I should keep it const? since sort() re-arranges it?
       const newBlogs = blogs.map((blog) => blog.id === newBlog.id ? newBlog : blog)
+      newBlogs.sort((blogA, blogB) => blogB.likes - blogA.likes)
       setBlogs(newBlogs)
 
     } catch (error) {
