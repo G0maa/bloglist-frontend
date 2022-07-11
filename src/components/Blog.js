@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({blog, handleLike}) => {
+const Blog = ({blog, handleLike, handleDelete, userName}) => {
   const [isFull, setIsFull] = useState(false)
 
   const blogStyle = {
@@ -11,6 +11,9 @@ const Blog = ({blog, handleLike}) => {
     marginBottom: 5
   }
 
+  const deleteButtonStyle = { 
+    display: userName === blog.user.username ? '' : 'none'
+  }
   // A Problem:
   // My implementation in the backend differs from examples solution,
   // not because it's wrong but because I solved the optional excercises (?I think?)
@@ -21,6 +24,13 @@ const Blog = ({blog, handleLike}) => {
     const newBlog = {...blog}
     newBlog.likes += 1
     handleLike(newBlog)
+  }
+
+  const confirmDelete = () => {
+    const ans = window.confirm(`Sure about deleting "${blog.title}?"`)
+    if(ans === true) {
+      handleDelete(blog.id)
+    }
   }
 
   if(!isFull) {
@@ -41,6 +51,7 @@ const Blog = ({blog, handleLike}) => {
         <li>Author: {blog.author}</li>
       </ul>
       <button type="button" onClick={() => setIsFull(!isFull)}>Hide</button>
+      <button type="button" onClick={confirmDelete} style={deleteButtonStyle}>Delete</button>
     </div> 
   )
 }

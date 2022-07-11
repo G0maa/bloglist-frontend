@@ -42,24 +42,26 @@ const App = () => {
   useEffect(() => {
     console.log('test0')
     const loggedInUserJSON = window.localStorage.getItem('loggedInUser')
+
     if (loggedInUserJSON) {
       const retUser = JSON.parse(loggedInUserJSON)
       setUser(retUser)
       blogService.setToken(retUser.token)
     }
   }, [])
-
+  console.log(user)
   // This useEffect depends on the one before it being fired,
   // I don't know how react calls use effects, but hope this is more efficient??
   // nvm, useEffect gets executed in the order they're defined in.
   useEffect(() => {
     console.log('test1')
+
     blogService.getAll().then((blogs) => {
+      console.log(blogs[0])
       blogs.sort((blogA, blogB) => blogB.likes - blogA.likes)
       setBlogs(blogs)
     })
   }, [])
-
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -120,6 +122,18 @@ const App = () => {
     }
   }
 
+  const handleDelete = async (blogId) => {
+    try {
+      await blogService.deleteBlog(blogId)
+      const newBlogs = blogs.filter((blog) => blog.id !== blogId)
+      newBlogs.sort((blogA, blogB) => blogB.likes - blogA.likes)
+      setBlogs(newBlogs)
+    } catch (error) {
+      console.log(error)
+      showError(error.response.data.error)
+    }
+  }
+
   const blogFormRef = useRef()
 
   if (user === null) {
@@ -160,7 +174,13 @@ const App = () => {
         <p>{user.name} is logged in</p>
         <button type="button" onClick={handleLogout}>Logout</button>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+          <Blog 
+            key={blog.id}
+            blog={blog}
+            handleLike={handleLike}
+            handleDelete={handleDelete}
+            userName={user.username}
+          />
         )}
       </div>
       <Toggleable buttonLabel={'show form'} ref={blogFormRef}>
