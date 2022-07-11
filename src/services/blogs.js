@@ -9,22 +9,22 @@ const setToken = (givenToken) => {
 
 // Unspecified user, but my implementation still requires token.
 const getAll = async () => {
-  const response = await axios.get(baseUrl, { headers: {Authorization: token } })
+  const response = await axios.get(baseUrl, { headers: { Authorization: token } })
   return response.data
 }
 
 const postBlog = async (blog) => {
-  const response = await axios.post(baseUrl, blog, { headers: {Authorization: token } })
+  const response = await axios.post(baseUrl, blog, { headers: { Authorization: token } })
   return response.data
 }
 
 const likeBlog = async (blog) => {
-  const response = await axios.put(`${baseUrl}/${blog.id}`, blog, { headers: {Authorization: token } })
+  const response = await axios.put(`${baseUrl}/${blog.id}`, blog, { headers: { Authorization: token } })
   return response.data
 }
 
 const deleteBlog = async (blogId) => {
-  const response = await axios.delete(`${baseUrl}/${blogId}`, { headers: {Authorization: token } })
+  const response = await axios.delete(`${baseUrl}/${blogId}`, { headers: { Authorization: token } })
   return response.data
 }
 

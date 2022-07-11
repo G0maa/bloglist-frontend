@@ -109,7 +109,7 @@ const App = () => {
     try {
       // I think this await doesn't work, if there's a console.log after it it gets printed immidietly.
       await blogService.likeBlog(newBlog)
-      console.log("test await")
+      console.log('test await')
 
       // Not sure if I should keep it const? since sort() re-arranges it?
       const newBlogs = blogs.map((blog) => blog.id === newBlog.id ? newBlog : blog)
@@ -174,7 +174,7 @@ const App = () => {
         <p>{user.name} is logged in</p>
         <button type="button" onClick={handleLogout}>Logout</button>
         {blogs.map(blog =>
-          <Blog 
+          <Blog
             key={blog.id}
             blog={blog}
             handleLike={handleLike}

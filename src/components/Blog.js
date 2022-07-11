@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 
-const Blog = ({blog, handleLike, handleDelete, userName}) => {
+const Blog = ({ blog, handleLike, handleDelete, userName }) => {
   const [isFull, setIsFull] = useState(false)
 
   const blogStyle = {
@@ -11,7 +12,7 @@ const Blog = ({blog, handleLike, handleDelete, userName}) => {
     marginBottom: 5
   }
 
-  const deleteButtonStyle = { 
+  const deleteButtonStyle = {
     display: userName === blog.user.username ? '' : 'none'
   }
   // A Problem:
@@ -21,7 +22,7 @@ const Blog = ({blog, handleLike, handleDelete, userName}) => {
   // Have a dedicated like function in the backend :)
 
   const incrementLike = () => {
-    const newBlog = {...blog}
+    const newBlog = { ...blog }
     newBlog.likes += 1
     handleLike(newBlog)
   }
@@ -38,7 +39,7 @@ const Blog = ({blog, handleLike, handleDelete, userName}) => {
       <div style={blogStyle}>
         {blog.title} {blog.author}
         <button type="button" onClick={() => setIsFull(!isFull)}>Show</button>
-      </div>  
+      </div>
     )
   }
 
@@ -52,8 +53,15 @@ const Blog = ({blog, handleLike, handleDelete, userName}) => {
       </ul>
       <button type="button" onClick={() => setIsFull(!isFull)}>Hide</button>
       <button type="button" onClick={confirmDelete} style={deleteButtonStyle}>Delete</button>
-    </div> 
+    </div>
   )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  handleLike: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+  userName: PropTypes.string.isRequired
 }
 
 export default Blog
