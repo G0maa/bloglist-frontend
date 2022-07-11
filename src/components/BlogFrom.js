@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+
 const BlogForm = ({ submitBlog }) => {
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
@@ -18,6 +19,8 @@ const BlogForm = ({ submitBlog }) => {
     setBlogUrl('')
     submitBlog(newBlog)
   }
+
+
 
   return (
     <div>

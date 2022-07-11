@@ -14,8 +14,6 @@ const App = () => {
 
   const [user, setUser] = useState(null)
 
-
-
   const [notificationObj, setNotificationObj] = useState(null)
 
   // Can be improved thorugh higher-order-functions, no?
@@ -42,8 +40,8 @@ const App = () => {
   }
 
   useEffect(() => {
+    console.log('test0')
     const loggedInUserJSON = window.localStorage.getItem('loggedInUser')
-
     if (loggedInUserJSON) {
       const retUser = JSON.parse(loggedInUserJSON)
       setUser(retUser)
@@ -53,14 +51,13 @@ const App = () => {
 
   // This useEffect depends on the one before it being fired,
   // I don't know how react calls use effects, but hope this is more efficient??
+  // nvm, useEffect gets executed in the order they're defined in.
   useEffect(() => {
-    if(user !== null) {
-      blogService.getAll().then(blogs =>
-        setBlogs( blogs )
-      ) 
-    }
-    // React complained when I removed `user` from the array.
-  }, [user])
+    console.log('test1')
+    blogService.getAll().then(blogs =>
+      setBlogs(blogs)
+    )
+  }, [])
 
 
   const handleLogin = async (event) => {
@@ -69,9 +66,9 @@ const App = () => {
     try {
       const retUser = await loginService.login({ username, password })
       console.log(retUser)
-  
+
       window.localStorage.setItem('loggedInUser', JSON.stringify(retUser))
-  
+
       blogService.setToken(retUser.token)
       setUser(retUser)
       setUsername('')
@@ -103,15 +100,28 @@ const App = () => {
       console.log(error)
       showError(error.response.data.error)
     }
+  }
 
+  const handleLike = async (newBlog) => {
+    try {
+      // I think this await doesn't work, if there's a console.log after it it gets printed immidietly.
+      await blogService.likeBlog(newBlog)
+      console.log("test await")
+      const newBlogs = blogs.map((blog) => blog.id === newBlog.id ? newBlog : blog)
+      setBlogs(newBlogs)
+
+    } catch (error) {
+      console.log(error)
+      showError(error.response.data.error)
+    }
   }
 
   const blogFormRef = useRef()
 
-  if(user === null) {
+  if (user === null) {
     return (
       <div>
-        <Notification notificationObj={notificationObj}/>
+        <Notification notificationObj={notificationObj} />
         <h2>Login to Bloglist Appp</h2>
         <form onSubmit={handleLogin}>
           <div>
@@ -137,16 +147,16 @@ const App = () => {
       </div>
     )
   }
-  
+
   return (
     <div>
-      <Notification notificationObj={notificationObj}/>
+      <Notification notificationObj={notificationObj} />
       <div>
         <h2>blogs</h2>
         <p>{user.name} is logged in</p>
         <button type="button" onClick={handleLogout}>Logout</button>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} handleLike={handleLike} />
         )}
       </div>
       <Toggleable buttonLabel={'show form'} ref={blogFormRef}>
