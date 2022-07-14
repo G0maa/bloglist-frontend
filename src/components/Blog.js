@@ -36,7 +36,7 @@ const Blog = ({ blog, handleLike, handleDelete, userName }) => {
 
   if(!isFull) {
     return (
-      <div style={blogStyle}>
+      <div className='blogs' style={blogStyle}>
         {blog.title} {blog.author}
         <button type="button" onClick={() => setIsFull(!isFull)}>Show</button>
       </div>
@@ -44,11 +44,11 @@ const Blog = ({ blog, handleLike, handleDelete, userName }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div className='blogs' style={blogStyle}>
       <ul>
         <li>Title: {blog.title}</li>
         <li>URL: <a href={blog.url}>{blog.url}</a></li>
-        <li>Likes: {blog.likes} <button type='button' onClick={incrementLike}>like</button></li>
+        <li>Likes: {blog.likes} <button className='like-button' type='button' onClick={incrementLike}>like</button></li>
         <li>Author: {blog.author}</li>
       </ul>
       <button type="button" onClick={() => setIsFull(!isFull)}>Hide</button>
