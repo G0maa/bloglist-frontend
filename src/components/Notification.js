@@ -1,10 +1,14 @@
-const Notification = ({ notificationObj }) => {
-  if (notificationObj === null) return null
+import { useSelector } from 'react-redux'
+
+const Notification = () => {
+  const notificationObj = useSelector(state => state.noteification )
+
+  if (notificationObj.message === '') return null
 
   // Probably not the best way to implement an error notification,
   // but I was lazy.
   const notificationStyle = {
-    color: notificationObj.error === true ? 'red' : 'green',
+    color: notificationObj.type === 'error' ? 'red' : 'green',
     background: 'lightgrey',
     fontSize: 20,
     borderStyle: 'solid',
@@ -13,7 +17,11 @@ const Notification = ({ notificationObj }) => {
     marginBottom: 10,
   }
 
-  return <div style={notificationStyle}>{notificationObj.message}</div>
+  return (
+    <div style={notificationStyle}>
+      {notificationObj.message}
+    </div>
+  )
 }
 
 export default Notification

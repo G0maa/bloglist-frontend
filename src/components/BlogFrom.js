@@ -1,7 +1,11 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
+// import { useDispatch } from 'react-redux'
+// import { showNotification } from '../reducers/notificationReducer'
 
 const BlogForm = ({ submitBlog }) => {
+  // const dispatch = useDispatch()
+
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
   const [blogUrl, setBlogUrl] = useState('')
@@ -18,6 +22,10 @@ const BlogForm = ({ submitBlog }) => {
     setBlogAuthor('')
     setBlogUrl('')
     submitBlog(newBlog)
+
+    // This should not be here, but I am eventually going to change everything to Redux,
+    // meaning handling new blogs would be moved to here.
+    // dispatch(showNotification(`Blog "${newBlog.title}" was added successfully`))
   }
 
   return (

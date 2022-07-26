@@ -6,6 +6,9 @@ import Toggleable from './components/Toggleable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+import { useDispatch } from 'react-redux'
+import { showNotification, showError } from './reducers/notificationReducer'
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
 
@@ -14,30 +17,7 @@ const App = () => {
 
   const [user, setUser] = useState(null)
 
-  const [notificationObj, setNotificationObj] = useState(null)
-
-  // Can be improved thorugh higher-order-functions, no?
-  const showError = (message) => {
-    setNotificationObj({
-      message,
-      error: true,
-    })
-
-    setTimeout(() => {
-      setNotificationObj(null)
-    }, 5000)
-  }
-
-  const showNotification = (message) => {
-    setNotificationObj({
-      message,
-      error: false,
-    })
-
-    setTimeout(() => {
-      setNotificationObj(null)
-    }, 5000)
-  }
+  const dispatch = useDispatch()
 
   useEffect(() => {
     console.log('test0')
@@ -76,10 +56,10 @@ const App = () => {
       setUser(retUser)
       setUsername('')
       setPassword('')
-      showNotification(`Welcome "${retUser.name}!"`)
+      dispatch(showNotification(`Welcome "${retUser.name}!"`))
     } catch (error) {
       console.log(error)
-      showError(error.response.data.error)
+      dispatch(showError(error.response.data.error))
     }
   }
 
@@ -97,10 +77,10 @@ const App = () => {
       setBlogs(retBlogs)
 
       blogFormRef.current.toggleVisible()
-      showNotification(`Blog "${newBlog.title}" was added successfully`)
+      dispatch(showNotification(`Blog "${newBlog.title}" was added successfully`))
     } catch (error) {
       console.log(error)
-      showError(error.response.data.error)
+      dispatch(showError(error.response.data.error))
     }
   }
 
@@ -118,7 +98,7 @@ const App = () => {
       setBlogs(newBlogs)
     } catch (error) {
       console.log(error)
-      showError(error.response.data.error)
+      dispatch(showError(error.response.data.error))
     }
   }
 
@@ -130,7 +110,7 @@ const App = () => {
       setBlogs(newBlogs)
     } catch (error) {
       console.log(error)
-      showError(error.response.data.error)
+      dispatch(showError(error.response.data.error))
     }
   }
 
@@ -139,7 +119,7 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <Notification notificationObj={notificationObj} />
+        <Notification />
         <h2>Login to Bloglist App</h2>
         <form onSubmit={handleLogin}>
           <div>
@@ -172,7 +152,7 @@ const App = () => {
 
   return (
     <div>
-      <Notification notificationObj={notificationObj} />
+      <Notification />
       <div>
         <h2>blogs</h2>
         <p>{user.name} is logged in</p>

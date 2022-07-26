@@ -3,6 +3,7 @@
 - Tech stack: `MERN`.
   - Deployment: `Heroku`,
   - Database: `cloud.mongodb.com`
+  - state management: `Redux Toolkit`
   - testing:
     - Unit tests: `Jest`
     - Integration tests (API Tests): `Jest and Supertest`
