@@ -81,7 +81,6 @@ const App = () => {
       console.log(error)
       showError(error.response.data.error)
     }
-
   }
 
   const handleLogout = () => {
@@ -112,10 +111,11 @@ const App = () => {
       console.log('test await')
 
       // Not sure if I should keep it const? since sort() re-arranges it?
-      const newBlogs = blogs.map((blog) => blog.id === newBlog.id ? newBlog : blog)
+      const newBlogs = blogs.map((blog) =>
+        blog.id === newBlog.id ? newBlog : blog
+      )
       newBlogs.sort((blogA, blogB) => blogB.likes - blogA.likes)
       setBlogs(newBlogs)
-
     } catch (error) {
       console.log(error)
       showError(error.response.data.error)
@@ -162,7 +162,9 @@ const App = () => {
               onChange={({ target }) => setPassword(target.value)}
             />
           </div>
-          <button id="login-button" type="submit">Login</button>
+          <button id="login-button" type="submit">
+            Login
+          </button>
         </form>
       </div>
     )
@@ -174,8 +176,10 @@ const App = () => {
       <div>
         <h2>blogs</h2>
         <p>{user.name} is logged in</p>
-        <button type="button" onClick={handleLogout}>Logout</button>
-        {blogs.map(blog =>
+        <button type="button" onClick={handleLogout}>
+          Logout
+        </button>
+        {blogs.map((blog) => (
           <Blog
             key={blog.id}
             blog={blog}
@@ -183,7 +187,7 @@ const App = () => {
             handleDelete={handleDelete}
             userName={user.username}
           />
-        )}
+        ))}
       </div>
       <Toggleable buttonLabel={'show form'} ref={blogFormRef}>
         <BlogForm submitBlog={submitBlog} />

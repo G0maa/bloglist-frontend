@@ -9,11 +9,11 @@ const Blog = ({ blog, handleLike, handleDelete, userName }) => {
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
   }
 
   const deleteButtonStyle = {
-    display: userName === blog.user.username ? '' : 'none'
+    display: userName === blog.user.username ? '' : 'none',
   }
   // A Problem:
   // My implementation in the backend differs from examples solution,
@@ -29,30 +29,43 @@ const Blog = ({ blog, handleLike, handleDelete, userName }) => {
 
   const confirmDelete = () => {
     const ans = window.confirm(`Sure about deleting "${blog.title}?"`)
-    if(ans === true) {
+    if (ans === true) {
       handleDelete(blog.id)
     }
   }
 
-  if(!isFull) {
+  if (!isFull) {
     return (
-      <div className='blogs' style={blogStyle}>
+      <div className="blogs" style={blogStyle}>
         {blog.title} {blog.author}
-        <button type="button" onClick={() => setIsFull(!isFull)}>Show</button>
+        <button type="button" onClick={() => setIsFull(!isFull)}>
+          Show
+        </button>
       </div>
     )
   }
 
   return (
-    <div className='blogs' style={blogStyle}>
+    <div className="blogs" style={blogStyle}>
       <ul>
         <li>Title: {blog.title}</li>
-        <li>URL: <a href={blog.url}>{blog.url}</a></li>
-        <li>Likes: {blog.likes} <button className='like-button' type='button' onClick={incrementLike}>like</button></li>
+        <li>
+          URL: <a href={blog.url}>{blog.url}</a>
+        </li>
+        <li>
+          Likes: {blog.likes}{' '}
+          <button className="like-button" type="button" onClick={incrementLike}>
+            like
+          </button>
+        </li>
         <li>Author: {blog.author}</li>
       </ul>
-      <button type="button" onClick={() => setIsFull(!isFull)}>Hide</button>
-      <button type="button" onClick={confirmDelete} style={deleteButtonStyle}>Delete</button>
+      <button type="button" onClick={() => setIsFull(!isFull)}>
+        Hide
+      </button>
+      <button type="button" onClick={confirmDelete} style={deleteButtonStyle}>
+        Delete
+      </button>
     </div>
   )
 }
@@ -61,7 +74,7 @@ Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   handleLike: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
-  userName: PropTypes.string.isRequired
+  userName: PropTypes.string.isRequired,
 }
 
 export default Blog

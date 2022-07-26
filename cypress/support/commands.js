@@ -17,14 +17,17 @@ Cypress.Commands.add('resetDB', () => {
 
 Cypress.Commands.add('registerUser', ({ username, name, password }) => {
   cy.request('POST', 'http://localhost:3003/api/users', {
-    username, name, password
+    username,
+    name,
+    password,
   })
 })
 
 // Mhm... probably because it's the same URL they have the same localStorage
 Cypress.Commands.add('loginUser', ({ username, password }) => {
   cy.request('POST', 'http://localhost:3003/api/login', {
-    username, password
+    username,
+    password,
   }).then(({ body }) => {
     localStorage.setItem('loggedInUser', JSON.stringify(body))
     cy.visit('http://localhost:3000')
@@ -52,7 +55,7 @@ Cypress.Commands.add('postBlog', ({ title, author, url, likes }) => {
       title,
       author,
       url,
-      likes
+      likes,
     },
     auth: { bearer: JSON.parse(localStorage.getItem('loggedInUser')).token },
   })

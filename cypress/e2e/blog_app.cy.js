@@ -1,16 +1,16 @@
-describe('Blog app', function() {
-  beforeEach(function() {
+describe('Blog app', function () {
+  beforeEach(function () {
     cy.resetDB()
     cy.registerUser({
-      'username': 'admin',
-      'name': 'Gomaa',
-      'password': 'sekret'
+      username: 'admin',
+      name: 'Gomaa',
+      password: 'sekret',
     })
 
     cy.registerUser({
-      'username': 'root',
-      'name': 'Noriel',
-      'password': 'secure'
+      username: 'root',
+      name: 'Noriel',
+      password: 'secure',
     })
     cy.visit('http://localhost:3000')
   })
@@ -20,8 +20,8 @@ describe('Blog app', function() {
     cy.get('form')
   })
 
-  describe('Login',function() {
-    it('succeeds with correct credentials', function() {
+  describe('Login', function () {
+    it('succeeds with correct credentials', function () {
       cy.get('#username').type('admin')
       cy.get('#password').type('sekret')
       cy.get('#login-button').click()
@@ -29,25 +29,28 @@ describe('Blog app', function() {
       cy.contains('Gomaa is logged in')
     })
 
-    it('fails with wrong credentials', function() {
+    it('fails with wrong credentials', function () {
       cy.get('#username').type('admin')
       cy.get('#password').type('wrong')
       cy.get('#login-button').click()
 
-      cy.contains('invalid username or password')
-        .should('have.css', 'color', 'rgb(255, 0, 0)')
+      cy.contains('invalid username or password').should(
+        'have.css',
+        'color',
+        'rgb(255, 0, 0)'
+      )
     })
   })
 
-  describe('When logged in', function() {
-    beforeEach(function() {
+  describe('When logged in', function () {
+    beforeEach(function () {
       cy.loginUser({
-        'username': 'admin',
-        'password': 'sekret'
+        username: 'admin',
+        password: 'sekret',
       })
     })
 
-    it('A blog can be created', function() {
+    it('A blog can be created', function () {
       cy.contains('show form').click()
 
       cy.get('#blogTitle').type('cypress title')
@@ -60,14 +63,13 @@ describe('Blog app', function() {
       cy.contains('Blog "cypress title" was added successfully')
     })
 
-    describe('After addition of a blog', function() {
-      beforeEach(function() {
+    describe('After addition of a blog', function () {
+      beforeEach(function () {
         cy.postDummyBlog()
       })
 
-      it('A blog can be liked', function() {
-        cy
-          .contains('dummy cypress title dummy cypress author')
+      it('A blog can be liked', function () {
+        cy.contains('dummy cypress title dummy cypress author')
           .contains('Show')
           .click()
 
@@ -76,9 +78,8 @@ describe('Blog app', function() {
         cy.contains('Likes: 1')
       })
 
-      it('A blog can be deleted', function() {
-        cy
-          .contains('dummy cypress title dummy cypress author')
+      it('A blog can be deleted', function () {
+        cy.contains('dummy cypress title dummy cypress author')
           .contains('Show')
           .click()
 
@@ -87,15 +88,14 @@ describe('Blog app', function() {
         cy.should('not.contain', 'dummy cypress title dummy cypress author')
       })
 
-      it('A blog can only be deleted by its creator', function() {
+      it('A blog can only be deleted by its creator', function () {
         cy.contains('Logout').click()
         cy.loginUser({
           username: 'root',
-          password: 'secure'
+          password: 'secure',
         })
 
-        cy
-          .contains('dummy cypress title dummy cypress author')
+        cy.contains('dummy cypress title dummy cypress author')
           .contains('Show')
           .click()
 
@@ -111,38 +111,38 @@ describe('Blog app', function() {
       })
     })
 
-    describe('Making sure blogs are sorted', function() {
-      beforeEach(function() {
+    describe('Making sure blogs are sorted', function () {
+      beforeEach(function () {
         cy.postBlog({
           title: 'Most liked',
           author: 'author1',
           url: 'url1',
-          likes: 4
+          likes: 4,
         })
 
         cy.postBlog({
           title: 'nomral liked',
           author: 'author2',
           url: 'url2',
-          likes: 2
+          likes: 2,
         })
 
         cy.postBlog({
           title: 'least liked',
           author: 'author3',
           url: 'url3',
-          likes: 1
+          likes: 1,
         })
         cy.visit('http://localhost:3000')
       })
 
-      it('are blogs sorted?', function() {
+      it('are blogs sorted?', function () {
         cy.get('.blogs').eq(0).should('contain', 'Most liked author1')
         cy.get('.blogs').eq(1).should('contain', 'nomral liked author2')
         cy.get('.blogs').eq(2).should('contain', 'least liked author3')
       })
 
-      it('If we liked a blog, will order change?', function() {
+      it('If we liked a blog, will order change?', function () {
         cy.get('.blogs').eq(2).contains('Show').click()
 
         cy.get('.blogs').eq(2).get('.like-button').click()

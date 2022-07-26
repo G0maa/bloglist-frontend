@@ -8,7 +8,7 @@ test('Checking correct info are provided to props function', async () => {
   const testBlog = {
     title: 'test title',
     author: 'test author',
-    url: 'test url'
+    url: 'test url',
   }
 
   const dummySubmit = jest.fn()

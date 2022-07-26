@@ -9,15 +9,14 @@ describe('Testing <Blog />', () => {
   const dummyLike = jest.fn()
   const dummyDelete = jest.fn()
   beforeEach(() => {
-
     const sampleBlog = {
       title: 'Testing title',
       author: 'Testing author',
       url: '/testing_url',
       likes: 1,
       user: {
-        username: 'test'
-      }
+        username: 'test',
+      },
     }
 
     container = render(
@@ -25,7 +24,7 @@ describe('Testing <Blog />', () => {
         blog={sampleBlog}
         handleLike={dummyLike}
         handleDelete={dummyDelete}
-        userName='test'
+        userName="test"
       />
     ).container
   })
