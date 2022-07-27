@@ -1,11 +1,11 @@
-import PropTypes from 'prop-types'
 import { useState } from 'react'
-// import { useDispatch } from 'react-redux'
-// import { showNotification } from '../reducers/notificationReducer'
+import { useDispatch } from 'react-redux'
+import { createBlog } from '../reducers/blogsReducer'
 
-const BlogForm = ({ submitBlog }) => {
-  // const dispatch = useDispatch()
+const BlogForm = () => {
+  const dispatch = useDispatch()
 
+  // Optional: Group these in a single hook.
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
   const [blogUrl, setBlogUrl] = useState('')
@@ -21,11 +21,8 @@ const BlogForm = ({ submitBlog }) => {
     setBlogTitle('')
     setBlogAuthor('')
     setBlogUrl('')
-    submitBlog(newBlog)
 
-    // This should not be here, but I am eventually going to change everything to Redux,
-    // meaning handling new blogs would be moved to here.
-    // dispatch(showNotification(`Blog "${newBlog.title}" was added successfully`))
+    dispatch(createBlog(newBlog))
   }
 
   return (
@@ -73,7 +70,4 @@ const BlogForm = ({ submitBlog }) => {
   )
 }
 
-BlogForm.propTypes = {
-  submitBlog: PropTypes.func.isRequired,
-}
 export default BlogForm

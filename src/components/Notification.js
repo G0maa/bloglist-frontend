@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 
 const Notification = () => {
-  const notificationObj = useSelector(state => state.noteification )
+  const notificationObj = useSelector(state => state.notification )
 
   if (notificationObj.message === '') return null
 

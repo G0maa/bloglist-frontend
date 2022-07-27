@@ -1,151 +1,35 @@
-import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
+import { useEffect } from 'react'
+import BlogList from './components/BlogList'
 import BlogForm from './components/BlogFrom'
 import Notification from './components/Notification'
-import Toggleable from './components/Toggleable'
-import blogService from './services/blogs'
-import loginService from './services/login'
 
-import { useDispatch } from 'react-redux'
-import { showNotification, showError } from './reducers/notificationReducer'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchAllBlogs } from './reducers/blogsReducer'
+import { initalizeUser, logoutUser } from './reducers/userReducer'
+import LoginFrom from './components/LoginForm'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-
-  const [user, setUser] = useState(null)
-
+  const user = useSelector((state) => state.user)
   const dispatch = useDispatch()
 
+  // useEffect gets executed in the order they're defined in.
   useEffect(() => {
-    console.log('test0')
-    const loggedInUserJSON = window.localStorage.getItem('loggedInUser')
-
-    if (loggedInUserJSON) {
-      const retUser = JSON.parse(loggedInUserJSON)
-      setUser(retUser)
-      blogService.setToken(retUser.token)
-    }
-  }, [])
-  console.log(user)
-  // This useEffect depends on the one before it being fired,
-  // I don't know how react calls use effects, but hope this is more efficient??
-  // nvm, useEffect gets executed in the order they're defined in.
-  useEffect(() => {
-    console.log('test1')
-
-    blogService.getAll().then((blogs) => {
-      console.log(blogs[0])
-      blogs.sort((blogA, blogB) => blogB.likes - blogA.likes)
-      setBlogs(blogs)
-    })
+    dispatch(initalizeUser())
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-
-    try {
-      const retUser = await loginService.login({ username, password })
-      console.log(retUser)
-
-      window.localStorage.setItem('loggedInUser', JSON.stringify(retUser))
-
-      blogService.setToken(retUser.token)
-      setUser(retUser)
-      setUsername('')
-      setPassword('')
-      dispatch(showNotification(`Welcome "${retUser.name}!"`))
-    } catch (error) {
-      console.log(error)
-      dispatch(showError(error.response.data.error))
-    }
-  }
+  useEffect(() => {
+    dispatch(fetchAllBlogs())
+  }, [])
 
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedInUser')
-    setUser(null)
+    dispatch(logoutUser())
   }
 
-  // Can't I just move thing function to the BlogForm component?
-  const submitBlog = async (newBlog) => {
-    try {
-      const retBlog = await blogService.postBlog(newBlog)
-      console.log(retBlog)
-      const retBlogs = await blogService.getAll()
-      setBlogs(retBlogs)
-
-      blogFormRef.current.toggleVisible()
-      dispatch(showNotification(`Blog "${newBlog.title}" was added successfully`))
-    } catch (error) {
-      console.log(error)
-      dispatch(showError(error.response.data.error))
-    }
-  }
-
-  const handleLike = async (newBlog) => {
-    try {
-      // I think this await doesn't work, if there's a console.log after it it gets printed immidietly.
-      await blogService.likeBlog(newBlog)
-      console.log('test await')
-
-      // Not sure if I should keep it const? since sort() re-arranges it?
-      const newBlogs = blogs.map((blog) =>
-        blog.id === newBlog.id ? newBlog : blog
-      )
-      newBlogs.sort((blogA, blogB) => blogB.likes - blogA.likes)
-      setBlogs(newBlogs)
-    } catch (error) {
-      console.log(error)
-      dispatch(showError(error.response.data.error))
-    }
-  }
-
-  const handleDelete = async (blogId) => {
-    try {
-      await blogService.deleteBlog(blogId)
-      const newBlogs = blogs.filter((blog) => blog.id !== blogId)
-      newBlogs.sort((blogA, blogB) => blogB.likes - blogA.likes)
-      setBlogs(newBlogs)
-    } catch (error) {
-      console.log(error)
-      dispatch(showError(error.response.data.error))
-    }
-  }
-
-  const blogFormRef = useRef()
-
-  if (user === null) {
+  if (user.name === '') {
     return (
       <div>
         <Notification />
-        <h2>Login to Bloglist App</h2>
-        <form onSubmit={handleLogin}>
-          <div>
-            Username
-            <input
-              type="text"
-              value={username}
-              name="Username"
-              id="username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            Password
-            <input
-              type="password"
-              value={password}
-              name="Password"
-              id="password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button id="login-button" type="submit">
-            Login
-          </button>
-        </form>
+        <LoginFrom />
       </div>
     )
   }
@@ -159,19 +43,9 @@ const App = () => {
         <button type="button" onClick={handleLogout}>
           Logout
         </button>
-        {blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            handleLike={handleLike}
-            handleDelete={handleDelete}
-            userName={user.username}
-          />
-        ))}
+        <BlogList />
       </div>
-      <Toggleable buttonLabel={'show form'} ref={blogFormRef}>
-        <BlogForm submitBlog={submitBlog} />
-      </Toggleable>
+      <BlogForm />
     </div>
   )
 }

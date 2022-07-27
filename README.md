@@ -18,3 +18,26 @@
   - or username: `root` password `secret` or `sekret`
 - [Main repo link](https://github.com/OoMiDOoO/FullstackOpen), I can't submit many repos to the system so files of this repo will be copied there eventually.
 - P.S: I had a `.git` renamed to `git_folder` and `.gitignore`ed, so you might see more commits than in the main repo...
+
+- Actual to-dos:
+  - Hide 'create new blog' form after submitting a new blog (and make it toggleable)
+  - Check if `Prerttier` actually works "automatically".
+  - Group forms in a single hook
+  - Are there a better way for error handling for ReactJS other than `try catch`?
+
+- Actual self-notes:
+  - You don't have to specify which property of the state you are changing in the reducers, e.g. you have `notification` and `blogs` in your `store`... this may need further investigation though :)
+```JS
+// You don'tt have to do this:
+setNotification(state, action) {
+  const notificationState = state.notification
+  // remaining logic
+}
+// You can directly do this:
+setNotification(state, action) {
+  return {
+    message: action.payload,
+    type: 'normal',
+  }
+}
+```

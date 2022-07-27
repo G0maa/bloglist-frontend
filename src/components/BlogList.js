@@ -1,5 +1,40 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { deleteBlog, putLike } from '../reducers/blogsReducer'
+
+const BlogList = () => {
+  console.log('blogList re-render')
+  const blogList = useSelector(state => state.blogs)
+  const userName = useSelector(state => state.user.username)
+  const dispatch = useDispatch()
+
+  const handleLike = (blog) => {
+    const likedBlog = { ...blog, likes: blog.likes + 1 }
+    dispatch(putLike(likedBlog))
+  }
+
+  const handleDelete = (blog) => {
+    const ans = window.confirm(`Sure about deleting "${blog.title}?"`)
+    if (ans === true) {
+      dispatch(deleteBlog(blog))
+    }
+  }
+
+  return(
+    <>
+      {blogList.map((blog) => (
+        <Blog
+          key={blog.id}
+          blog={blog}
+          handleLike={handleLike}
+          handleDelete={handleDelete}
+          userName={userName}
+        />
+      ))}
+    </>
+  )
+}
 
 const Blog = ({ blog, handleLike, handleDelete, userName }) => {
   const [isFull, setIsFull] = useState(false)
@@ -14,24 +49,6 @@ const Blog = ({ blog, handleLike, handleDelete, userName }) => {
 
   const deleteButtonStyle = {
     display: userName === blog.user.username ? '' : 'none',
-  }
-  // A Problem:
-  // My implementation in the backend differs from examples solution,
-  // not because it's wrong but because I solved the optional excercises (?I think?)
-  // A solution:
-  // Have a dedicated like function in the backend :)
-
-  const incrementLike = () => {
-    const newBlog = { ...blog }
-    newBlog.likes += 1
-    handleLike(newBlog)
-  }
-
-  const confirmDelete = () => {
-    const ans = window.confirm(`Sure about deleting "${blog.title}?"`)
-    if (ans === true) {
-      handleDelete(blog.id)
-    }
   }
 
   if (!isFull) {
@@ -54,7 +71,7 @@ const Blog = ({ blog, handleLike, handleDelete, userName }) => {
         </li>
         <li>
           Likes: {blog.likes}{' '}
-          <button className="like-button" type="button" onClick={incrementLike}>
+          <button className="like-button" type="button" onClick={() => handleLike(blog)}>
             like
           </button>
         </li>
@@ -63,7 +80,7 @@ const Blog = ({ blog, handleLike, handleDelete, userName }) => {
       <button type="button" onClick={() => setIsFull(!isFull)}>
         Hide
       </button>
-      <button type="button" onClick={confirmDelete} style={deleteButtonStyle}>
+      <button type="button" onClick={() => handleDelete(blog)} style={deleteButtonStyle}>
         Delete
       </button>
     </div>
@@ -77,4 +94,4 @@ Blog.propTypes = {
   userName: PropTypes.string.isRequired,
 }
 
-export default Blog
+export default BlogList
