@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { showError, showNotification } from './notificationReducer'
-import blogService from '../services/blogs'
+import config from '../config'
 import loginService from '../services/login'
 
 const initialState = {
@@ -9,17 +9,13 @@ const initialState = {
   username: ''
 }
 
+// Probably need to re-name this one to avoid confusion
 const userReducer = createSlice({
   name: 'user',
   initialState,
   reducers: {
     setUser(state, action) {
       return action.payload
-      // return {
-      //   name: action.payload.name,
-      //   token: action.payload.token,
-      //   username: action.payload.username
-      // }
     },
     resetUser() {
       return {
@@ -36,10 +32,11 @@ export const initalizeUser = () => {
     const loggedInUserJSON = window.localStorage.getItem('loggedInUser')
     if (loggedInUserJSON) {
       const retUser = JSON.parse(loggedInUserJSON)
+
       dispatch(setUser(retUser))
 
       // We can't reflect state on non-component stuff.
-      blogService.setToken(retUser.token)
+      config.setToken(retUser.token)
     }
   })
 }
@@ -51,7 +48,7 @@ export const loginUser = (username, password) => {
 
       window.localStorage.setItem('loggedInUser', JSON.stringify(retUser))
 
-      blogService.setToken(retUser.token)
+      config.setToken(retUser.token)
       dispatch(setUser(retUser))
       dispatch(showNotification(`Welcome "${retUser.name}!"`))
     } catch (error) {

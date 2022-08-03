@@ -1,19 +1,21 @@
 import { useEffect } from 'react'
-import BlogList from './components/BlogList'
-import BlogForm from './components/BlogFrom'
-import Notification from './components/Notification'
-
-import { useDispatch, useSelector } from 'react-redux'
+import { Routes, Route } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import { fetchAllBlogs } from './reducers/blogsReducer'
-import { initalizeUser, logoutUser } from './reducers/userReducer'
+import { initalizeUser } from './reducers/userReducer'
 import LoginFrom from './components/LoginForm'
+import { Blogs, Blog } from './components/Blogs'
+import Navbar from './components/Navbar'
+import { Users, User } from './components/Users'
+import Notification from './components/Notification'
+import { fetchAllUsers } from './reducers/usersReducer'
 
 const App = () => {
-  const user = useSelector((state) => state.user)
   const dispatch = useDispatch()
 
   // useEffect gets executed in the order they're defined in.
   useEffect(() => {
+    console.log('User initialization...')
     dispatch(initalizeUser())
   }, [])
 
@@ -21,31 +23,26 @@ const App = () => {
     dispatch(fetchAllBlogs())
   }, [])
 
-  const handleLogout = () => {
-    dispatch(logoutUser())
-  }
+  useEffect(() => {
+    dispatch(fetchAllUsers())
+  }, [])
 
-  if (user.name === '') {
-    return (
-      <div>
-        <Notification />
-        <LoginFrom />
-      </div>
-    )
-  }
 
-  return (
+  return(
     <div>
       <Notification />
+      <Navbar />
+      <h1>Bloglist App</h1>
+      <Routes>
+        <Route path='/' element={<Blogs />}/>
+        <Route path='/blogs/:id' element={<Blog />}/>
+        <Route path='/users' element={<Users />}/>
+        <Route path='/users/:id' element={<User />} />
+        <Route path='/login' element={<LoginFrom />}/>
+      </Routes>
       <div>
-        <h2>blogs</h2>
-        <p>{user.name} is logged in</p>
-        <button type="button" onClick={handleLogout}>
-          Logout
-        </button>
-        <BlogList />
+        <em>FullstackOpen 2022 - Bloglist App - HTI Egypt</em>
       </div>
-      <BlogForm />
     </div>
   )
 }

@@ -14,6 +14,9 @@ const blogsReducer = createSlice({
       const blogs = action.payload
       return blogs.sort((blogA, blogB) => blogB.likes - blogA.likes)
     },
+    setDetails(state, action) {
+      return state.map((blog) => blog.id !== action.payload.id ? blog : action.payload)
+    },
     addNewBlog(state, action) {
       return [...state, action.payload].sort((blogA, blogB) => blogB.likes - blogA.likes)
     },
@@ -36,6 +39,13 @@ export const fetchAllBlogs = () => {
     } catch (error) {
       dispatch(showError(error.response.data.error))
     }
+  })
+}
+
+export const fetchBlogDetails = (blogId) => {
+  return(async (dispatch) => {
+    const blogDetails = await blogService.getDetails(blogId)
+    dispatch(setDetails(blogDetails))
   })
 }
 
@@ -76,5 +86,13 @@ export const deleteBlog = (blog) => {
   })
 }
 
-export const { setAllBlogs, addNewBlog, likeBlog, removeBlog } = blogsReducer.actions
+export const postComment = (blog) => {
+  return(async(dispatch) => {
+    console.log('dispatch /blogs',blog)
+    await blogService.addComment({ ...blog, user: blog.user.id })
+    dispatch(setDetails(blog))
+  })
+}
+
+export const { setAllBlogs, setDetails, addNewBlog, likeBlog, removeBlog } = blogsReducer.actions
 export default blogsReducer.reducer
