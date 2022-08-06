@@ -9,6 +9,7 @@ import Navbar from './components/Navbar'
 import { Users, User } from './components/Users'
 import Notification from './components/Notification'
 import { fetchAllUsers } from './reducers/usersReducer'
+import { Segment } from 'semantic-ui-react'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -32,7 +33,6 @@ const App = () => {
     <div>
       <Notification />
       <Navbar />
-      <h1>Bloglist App</h1>
       <Routes>
         <Route path='/' element={<Blogs />}/>
         <Route path='/blogs/:id' element={<Blog />}/>
@@ -40,9 +40,9 @@ const App = () => {
         <Route path='/users/:id' element={<User />} />
         <Route path='/login' element={<LoginFrom />}/>
       </Routes>
-      <div>
+      <Segment>
         <em>FullstackOpen 2022 - Bloglist App - HTI Egypt</em>
-      </div>
+      </Segment>
     </div>
   )
 }

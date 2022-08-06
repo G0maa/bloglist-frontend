@@ -1,8 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { logoutUser } from '../reducers/userReducer'
+import { Menu, Message, Button } from 'semantic-ui-react'
+import { useState } from 'react'
+
 
 const Navbar = () => {
+  const [msgVisible, setMsgVisible] = useState(true)
   const user = useSelector((state) => state.user)
   const dispatch = useDispatch()
 
@@ -10,22 +14,55 @@ const Navbar = () => {
     dispatch(logoutUser())
   }
 
-  if(user.name === '')
+  if(!user) {
     return (
-      <div>
-        <Link to='/'>Blogs</Link>
-        <Link to='/users'>Users</Link>
-        <Link to='/login'>Login</Link>
-      </div>
+      <>
+        {msgVisible && <Message info
+          onDismiss={() => setMsgVisible(false)}
+          header='You are not logged in'
+          content='You will have some limited functionalitiy :)'
+        />}
+        <Menu stackable>
+          <Menu.Item header>BlogList App</Menu.Item>
+          <Menu.Item as={Link} to='/'>
+            Blogs
+          </Menu.Item>
+          <Menu.Item as={Link} to='/users'>
+            Users
+          </Menu.Item>
+          <Menu.Item as={Link} to='/login'>
+            Login
+          </Menu.Item>
+        </Menu>
+      </>
     )
+  }
 
   return (
-    <div>
-      <Link to='/'>Blogs</Link>
-      <Link to='/users'>Users</Link>
-      <em>User {user.name} Logged in</em>
-      <button onClick={() => handleLogout()}>Logout</button>
-    </div>
+    <>
+      <Menu stackable>
+        <Menu.Item header>BlogList App</Menu.Item>
+        <Menu.Item as={Link} to='/'>
+          Blogs
+        </Menu.Item>
+        <Menu.Item as={Link} to='/users'>
+          Users
+        </Menu.Item>
+        <Menu.Item as={Link} to='/login'>
+          Login
+        </Menu.Item>
+        <Menu.Item>
+          <Message size='mini'>
+            <Message.Header>Welcome back &apos;{user.name}&apos;!</Message.Header>
+          </Message>
+        </Menu.Item>
+        <Menu.Menu position='right'>
+          <Menu.Item>
+            <Button onClick={() => handleLogout()}>Logout</Button>
+          </Menu.Item>
+        </Menu.Menu>
+      </Menu>
+    </>
   )
 }
 

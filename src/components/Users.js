@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchUserBlogs } from '../reducers/usersReducer'
 import { Link, useParams } from 'react-router-dom'
+import { Table, Segment, Header } from 'semantic-ui-react'
 
 const Users = () => {
   const usersSummary = useSelector((state) => state.users) // too much information
@@ -15,26 +16,28 @@ const Users = () => {
   }
 
   return(
-    <div>
-      <h2>Users</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Blogs count</th>
-          </tr>
-        </thead>
-        <tbody>
+    <Segment>
+      <Header as='h2'>Users</Header>
+      <Table>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>Name</Table.HeaderCell>
+            <Table.HeaderCell>Blogs count</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
           {usersSummary.map((user) =>
-            <tr key={user.id}>
-              <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
-              <td>{user.blogCount}</td>
-            </tr>
+            <Table.Row key={user.id}>
+              <Table.Cell>
+                <Link to={`/users/${user.id}`}>{user.name}</Link>
+              </Table.Cell>
+              <Table.Cell>{user.blogsCount}</Table.Cell>
+            </Table.Row>
           )
           }
-        </tbody>
-      </table>
-    </div>
+        </Table.Body>
+      </Table>
+    </Segment>
   )
 }
 
@@ -45,7 +48,6 @@ const User = () => {
     dispatch(fetchUserBlogs(userId))
   }, [])
 
-  // destructor operator doesn't work with redux
   const user = useSelector((state) => state.users.find((user) => user.id === userId))
 
   if(!user){
@@ -56,11 +58,13 @@ const User = () => {
 
   return(
     <>
-      <h2>{ user.name }</h2>
-      <h3>Added Blogs: </h3>
-      <ul>
-        {user.blogs.map((blog) => <li key={blog.id}>{ blog.title }</li>)}
-      </ul>
+      <Segment>
+        <h2>{ user.name }</h2>
+        <h3>Added Blogs: </h3>
+        <ul>
+          {user.blogs.map((blog) => <li key={blog.id}>{ blog.title }</li>)}
+        </ul>
+      </Segment>
     </>
   )
 }

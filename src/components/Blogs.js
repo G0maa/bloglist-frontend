@@ -2,13 +2,18 @@ import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteBlog, putLike, createBlog, fetchBlogDetails, postComment } from '../reducers/blogsReducer'
 import { Link, useParams, useNavigate } from 'react-router-dom'
+import { Header, Grid, Form, Segment, Button, Menu, Label, Icon } from 'semantic-ui-react'
 
 const Blogs = () => {
   return(
     <>
-      <h2>Blogs</h2>
-      <BlogForm />
-      <BlogList />
+      <Segment>
+        <Header as='h2'>
+          Blogs list
+        </Header>
+        <BlogList />
+        <BlogForm />
+      </Segment>
     </>
   )
 }
@@ -16,23 +21,19 @@ const Blogs = () => {
 const BlogList = () => {
   const blogList = useSelector(state => state.blogs)
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
   return(
     <>
-      <ul>
+      <Menu vertical>
         {blogList.map((blog) => (
-          <li key={blog.id} style={blogStyle}>
+          <Menu.Item key={blog.id} link>
             <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-          </li>
+            <Label>
+              <Icon name='heart'/> {blog.likes}
+            </Label>
+          </Menu.Item>
+
         ))}
-      </ul>
+      </Menu>
     </>
   )
 }
@@ -83,33 +84,47 @@ const Blog = () => {
   }
 
   return (
-    <div className="blogs">
-      <h2>{blog.title} by {blog.author}</h2>
-      <a href={blog.url}>{blog.url}</a>
-      <p>
-        Likes: {blog.likes}
-        <button className="like-button" type="button" onClick={() => handleLike()}>
-          like
-        </button>
-      </p>
+    <>
+      <Segment className="blogs">
+        <Header as='h2' dividing>{blog.title} by {blog.author}</Header>
+        <Segment basic>
+          <a href={blog.url}>{blog.url}</a>
+        </Segment>
+        <Button as='div' labelPosition='right' className="like-button" type="button" onClick={() => handleLike()}>
+          <Button icon>
+            <Icon name='heart' />
+            Like
+          </Button>
+          <Label>
+            {blog.likes}
+          </Label>
+        </Button>
 
-      <button type="button" onClick={() => handleDelete()} style={deleteButtonStyle}>
-        Delete
-      </button>
-      <p>Added by {blog.user.username}</p>
-      <h3>Comments: </h3>
-      <form onSubmit={handleCommment}>
-        <input type='text' value={comment} onChange={({ target }) => setComment(target.value)}/>
-        <button type='submit'>add comment</button>
-      </form>
-      <ul>
-        {blog.comments.map((comment, idx) =>
-          <li key={idx}>
-            {comment}
-          </li>
-        )}
-      </ul>
-    </div>
+        <Button as='div' labelPosition='right' type="button" onClick={() => handleDelete()} style={deleteButtonStyle}>
+          <Button icon>
+            <Icon name='delete'/>
+          </Button>
+          <Label>
+            Delete
+          </Label>
+        </Button>
+        <Header size='small'>Added by {blog.user.username}</Header>
+      </Segment>
+      <Segment>
+        <h3>Comments </h3>
+        <form onSubmit={handleCommment}>
+          <input type='text' value={comment} onChange={({ target }) => setComment(target.value)}/>
+          <button type='submit'>add comment</button>
+        </form>
+        <ul>
+          {blog.comments.map((comment, idx) =>
+            <li key={idx}>
+              {comment}
+            </li>
+          )}
+        </ul>
+      </Segment>
+    </>
   )
 }
 
@@ -138,54 +153,54 @@ const BlogForm = () => {
   }
   if(isVisible)
     return (
-      <div>
-        <h2>Create new</h2>
-        <form onSubmit={handleNewBlog}>
-          <div>
-            Title
-            <input
-              type="text"
-              value={blogTitle}
-              name="BlogTitle"
-              placeholder="Enter blog title here..."
-              id="blogTitle"
-              onChange={({ target }) => setBlogTitle(target.value)}
-            />
-          </div>
-          <div>
-            Author
-            <input
-              type="text"
-              value={blogAuthor}
-              name="BlogAuthor"
-              placeholder="Enter blog author here..."
-              id="blogAuthor"
-              onChange={({ target }) => setBlogAuthor(target.value)}
-            />
-          </div>
-          <div>
-            URL
-            <input
-              type="text"
-              value={blogUrl}
-              name="BlogUrl"
-              placeholder="Enter blog URL here..."
-              id="blogUrl"
-              onChange={({ target }) => setBlogUrl(target.value)}
-            />
-          </div>
-          <button id="create-blog-button" type="submit">
-            Create
-          </button>
-          <button type='button' onClick={() => setIsVisible(!isVisible)}>
-            Hide Form
-          </button>
-        </form>
-      </div>
+      <Segment>
+        <Grid>
+          <Grid.Column style={{ maxWidth: 450 }}>
+            <Header as='h3'>
+              Create new
+            </Header>
+            <Form onSubmit={handleNewBlog}>
+              <Form.Input
+                label='Blog title'
+                type="text"
+                value={blogTitle}
+                name="BlogTitle"
+                placeholder="Enter blog title here..."
+                id="blogTitle"
+                onChange={({ target }) => setBlogTitle(target.value)}
+              />
+              <Form.Input
+                label='Blog author'
+                type="text"
+                value={blogAuthor}
+                name="BlogAuthor"
+                placeholder="Enter blog author here..."
+                id="blogAuthor"
+                onChange={({ target }) => setBlogAuthor(target.value)}
+              />
+              <Form.Input
+                label='Blog URL'
+                type="text"
+                value={blogUrl}
+                name="BlogUrl"
+                placeholder="Enter blog URL here..."
+                id="blogUrl"
+                onChange={({ target }) => setBlogUrl(target.value)}
+              />
+              <Button primary id="create-blog-button" type="submit">
+                Create
+              </Button>
+              <Button secondary type='button' onClick={() => setIsVisible(!isVisible)} >
+                Hide Form
+              </Button>
+            </Form>
+          </Grid.Column>
+        </Grid>
+      </Segment>
     )
 
   return(
-    <button type='button' onClick={() => setIsVisible(!isVisible)}>Submit Blog</button>
+    <Button color='green' type='button' onClick={() => setIsVisible(!isVisible)}>Submit Blog</Button>
   )
 }
 

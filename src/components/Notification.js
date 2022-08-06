@@ -1,26 +1,23 @@
 import { useSelector } from 'react-redux'
+import { Message } from 'semantic-ui-react'
 
 const Notification = () => {
   const notificationObj = useSelector(state => state.notification )
 
   if (notificationObj.message === '') return null
 
-  // Probably not the best way to implement an error notification,
-  // but I was lazy.
-  const notificationStyle = {
-    color: notificationObj.type === 'error' ? 'red' : 'green',
-    background: 'lightgrey',
-    fontSize: 20,
-    borderStyle: 'solid',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
+  if(notificationObj.type === 'error') {
+    return(
+      <Message negative
+        header={notificationObj.message}
+      />
+    )
   }
 
   return (
-    <div style={notificationStyle}>
-      {notificationObj.message}
-    </div>
+    <Message positive
+      header={notificationObj.message}
+    />
   )
 }
 

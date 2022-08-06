@@ -3,11 +3,8 @@ import { showError, showNotification } from './notificationReducer'
 import config from '../config'
 import loginService from '../services/login'
 
-const initialState = {
-  name: '',
-  token: '',
-  username: ''
-}
+// Embty object or null?
+const initialState = null
 
 // Probably need to re-name this one to avoid confusion
 const userReducer = createSlice({
@@ -18,11 +15,7 @@ const userReducer = createSlice({
       return action.payload
     },
     resetUser() {
-      return {
-        name: '',
-        token: '',
-        username: ''
-      }
+      return null
     }
   }
 })
