@@ -4,9 +4,11 @@ import { useDispatch } from 'react-redux'
 import { fetchAllBlogs } from './reducers/blogsReducer'
 import { initalizeUser } from './reducers/userReducer'
 import LoginFrom from './components/LoginForm'
-import { Blogs, Blog } from './components/Blogs'
+import Blogs from './components/Blogs'
+import Blog from './components/Blog'
 import Navbar from './components/Navbar'
-import { Users, User } from './components/Users'
+import Users from './components/Users'
+import User from './components/User'
 import Notification from './components/Notification'
 import { fetchAllUsers } from './reducers/usersReducer'
 import { Segment } from 'semantic-ui-react'
@@ -22,23 +24,19 @@ const App = () => {
 
   useEffect(() => {
     dispatch(fetchAllBlogs())
-  }, [])
-
-  useEffect(() => {
     dispatch(fetchAllUsers())
   }, [])
 
-
-  return(
+  return (
     <div>
       <Notification />
       <Navbar />
       <Routes>
-        <Route path='/' element={<Blogs />}/>
-        <Route path='/blogs/:id' element={<Blog />}/>
-        <Route path='/users' element={<Users />}/>
-        <Route path='/users/:id' element={<User />} />
-        <Route path='/login' element={<LoginFrom />}/>
+        <Route path="/" element={<Blogs />} />
+        <Route path="/blogs/:id" element={<Blog />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<User />} />
+        <Route path="/login" element={<LoginFrom />} />
       </Routes>
       <Segment>
         <em>FullstackOpen 2022 - Bloglist App - HTI Egypt</em>

@@ -10,7 +10,7 @@ const getAll = async () => {
   return response.data
 }
 
-const getDetails = async(blogId) => {
+const getDetails = async (blogId) => {
   const response = await axios.get(`${baseUrl}/${blogId}`, {
     headers: { Authorization: config.getToken() },
   })
@@ -38,10 +38,17 @@ const deleteBlog = async (blogId) => {
   return response.data
 }
 
-const addComment = async(blog) => {
+const addComment = async (blog) => {
   await axios.post(`${baseUrl}/${blog.id}/comments`, blog, {
-    headers: { Authorization: config.getToken() }
+    headers: { Authorization: config.getToken() },
   })
 }
 
-export default { getAll, postBlog, likeBlog, deleteBlog, getDetails, addComment }
+export default {
+  getAll,
+  postBlog,
+  likeBlog,
+  deleteBlog,
+  getDetails,
+  addComment,
+}

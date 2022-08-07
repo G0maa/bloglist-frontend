@@ -9,7 +9,6 @@ const initialState = []
 //  ]
 // }
 
-
 const usersReducer = createSlice({
   name: 'users',
   initialState,
@@ -18,23 +17,25 @@ const usersReducer = createSlice({
       return action.payload
     },
     setUsersBlogs(state, action) {
-      return state.map((user) => user.id !== action.payload.id ? user : action.payload)
-    }
-  }
+      return state.map((user) =>
+        user.id !== action.payload.id ? user : action.payload
+      )
+    },
+  },
 })
 
 export const fetchAllUsers = () => {
-  return(async (dispatch) => {
+  return async (dispatch) => {
     const data = await usersService.getSummary()
     dispatch(setUsers(data))
-  })
+  }
 }
 
 export const fetchUserBlogs = (userId) => {
-  return(async (dispatch) => {
+  return async (dispatch) => {
     const fullUser = await usersService.getDetails(userId)
     dispatch(setUsersBlogs(fullUser))
-  })
+  }
 }
 
 export const { setUsers, setUsersBlogs } = usersReducer.actions

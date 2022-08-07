@@ -1,3 +1,5 @@
+import { Menu } from "semantic-ui-react"
+
 describe('Blog app', function () {
   beforeEach(function () {
     cy.resetDB()
@@ -12,7 +14,7 @@ describe('Blog app', function () {
       name: 'Noriel',
       password: 'secure',
     })
-    cy.visit('http://localhost:3000')
+    cy.visit('http://localhost:3000/login')
   })
 
   it('Login form is shown', function () {
@@ -26,7 +28,7 @@ describe('Blog app', function () {
       cy.get('#password').type('sekret')
       cy.get('#login-button').click()
 
-      cy.contains('Gomaa is logged in')
+      cy.contains('Welcome "Gomaa"!')
     })
 
     it('fails with wrong credentials', function () {
@@ -34,11 +36,9 @@ describe('Blog app', function () {
       cy.get('#password').type('wrong')
       cy.get('#login-button').click()
 
-      cy.contains('invalid username or password').should(
-        'have.css',
-        'color',
-        'rgb(255, 0, 0)'
-      )
+      cy
+        .get('#notification-message')
+        .contains('invalid username or password')
     })
   })
 
@@ -51,7 +51,7 @@ describe('Blog app', function () {
     })
 
     it('A blog can be created', function () {
-      cy.contains('show form').click()
+      cy.contains('Submit Blog').click()
 
       cy.get('#blogTitle').type('cypress title')
       cy.get('#blogAuthor').type('cypress author')
@@ -59,8 +59,13 @@ describe('Blog app', function () {
 
       cy.get('#create-blog-button').click()
 
-      cy.contains('cypress title cypress author')
-      cy.contains('Blog "cypress title" was added successfully')
+      cy
+        .get('#blogList-Menu')
+        .contains('cypress title')
+
+      cy
+      .get('#notification-message')
+      .contains('Blog "cypress title" was added successfully')
     })
 
     describe('After addition of a blog', function () {
@@ -69,23 +74,27 @@ describe('Blog app', function () {
       })
 
       it('A blog can be liked', function () {
-        cy.contains('dummy cypress title dummy cypress author')
-          .contains('Show')
+        cy.contains('dummy cypress title')
           .click()
 
-        cy.contains('like').click()
+        cy
+          .get('#like-btn')
+          .contains('Like')
+          .click()
 
-        cy.contains('Likes: 1')
+        cy
+          .get('#likes-count-label')
+          .should('have.class', 'ui label')
+          .contains('1')
       })
 
       it('A blog can be deleted', function () {
-        cy.contains('dummy cypress title dummy cypress author')
-          .contains('Show')
+        cy.contains('dummy cypress title')
           .click()
 
         cy.contains('Delete').click()
-
-        cy.should('not.contain', 'dummy cypress title dummy cypress author')
+        
+        cy.get('#blogList-Menu').should('not.contain', 'dummy cypress title')
       })
 
       it('A blog can only be deleted by its creator', function () {
@@ -95,8 +104,7 @@ describe('Blog app', function () {
           password: 'secure',
         })
 
-        cy.contains('dummy cypress title dummy cypress author')
-          .contains('Show')
+        cy.contains('dummy cypress title')
           .click()
 
         // This begs a question in mind, what if the user has the button shown (i.e. advanced user?)
@@ -107,7 +115,7 @@ describe('Blog app', function () {
         // actually correct or not (i.e. if the user somehow makes a bad request like deleting a blog that isn't his),
         // then you should test it.
         // Also I think testing is OCD people heaven, you have to balance things out, not too deep, not too shallow.
-        cy.contains('Delete').should('have.css', 'Display', 'none')
+        cy.get('#delete-btn').should('have.css', 'Display', 'none')
       })
     })
 
@@ -137,25 +145,47 @@ describe('Blog app', function () {
       })
 
       it('are blogs sorted?', function () {
-        cy.get('.blogs').eq(0).should('contain', 'Most liked author1')
-        cy.get('.blogs').eq(1).should('contain', 'nomral liked author2')
-        cy.get('.blogs').eq(2).should('contain', 'least liked author3')
+        cy.get('.link.item').eq(0).should('contain', 'Most liked')
+        cy.get('.link.item').eq(1).should('contain', 'nomral liked')
+        cy.get('.link.item').eq(2).should('contain', 'least liked')
       })
 
-      it('If we liked a blog, will order change?', function () {
-        cy.get('.blogs').eq(2).contains('Show').click()
+      it.only('If we liked a blog, will order change?', function () {
+        cy
+        .contains('least liked')
+        .click()
 
-        cy.get('.blogs').eq(2).get('.like-button').click()
-        cy.wait(1000)
-        cy.get('.blogs').eq(2).get('.like-button').click()
-        cy.wait(1000)
-        cy.get('.blogs').eq(1).should('contain', 'Title: least liked')
+        cy
+          .contains('Like')
+          .click()
 
-        cy.get('.blogs').eq(1).get('.like-button').click()
         cy.wait(1000)
-        cy.get('.blogs').eq(1).get('.like-button').click()
+
+        cy
+        .contains('Like')
+        .click()
+
+        cy.visit('http://localhost:3000')
+
+        cy.get('.link.item').eq(1).should('contain', 'least liked')
+
+        cy
+        .contains('least liked')
+        .click()
+
+        cy
+          .contains('Like')
+          .click()
+
         cy.wait(1000)
-        cy.get('.blogs').eq(0).should('contain', 'Title: least liked')
+
+        cy
+        .contains('Like')
+        .click()
+
+        cy.visit('http://localhost:3000')
+
+        cy.get('.link.item').eq(0).should('contain', 'least liked')
       })
     })
   })

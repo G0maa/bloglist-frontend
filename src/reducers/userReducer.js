@@ -16,12 +16,12 @@ const userReducer = createSlice({
     },
     resetUser() {
       return null
-    }
-  }
+    },
+  },
 })
 
 export const initalizeUser = () => {
-  return((dispatch) => {
+  return (dispatch) => {
     const loggedInUserJSON = window.localStorage.getItem('loggedInUser')
     if (loggedInUserJSON) {
       const retUser = JSON.parse(loggedInUserJSON)
@@ -31,11 +31,11 @@ export const initalizeUser = () => {
       // We can't reflect state on non-component stuff.
       config.setToken(retUser.token)
     }
-  })
+  }
 }
 
 export const loginUser = (username, password) => {
-  return(async (dispatch) => {
+  return async (dispatch) => {
     try {
       const retUser = await loginService.login({ username, password })
 
@@ -43,18 +43,18 @@ export const loginUser = (username, password) => {
 
       config.setToken(retUser.token)
       dispatch(setUser(retUser))
-      dispatch(showNotification(`Welcome "${retUser.name}!"`))
+      dispatch(showNotification(`Welcome "${retUser.name}"!`))
     } catch (error) {
       dispatch(showError(error.response.data.error))
     }
-  })
+  }
 }
 
 export const logoutUser = () => {
-  return((dispatch) => {
+  return (dispatch) => {
     window.localStorage.removeItem('loggedInUser')
     dispatch(resetUser())
-  })
+  }
 }
 
 export const { setUser, resetUser } = userReducer.actions
